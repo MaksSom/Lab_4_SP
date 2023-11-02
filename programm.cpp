@@ -11,6 +11,11 @@ vector < pair < string, string > > rewriteRules(string file_text)
 //create a vector of rules
 }
 
+vector < vector < string > > First_k(vector < pair < string, string >> Rules, int k)
+{
+//function first_k
+}
+  
 int main()
 {
 ifstream file("Example.txt");
@@ -28,8 +33,8 @@ for(string a; getline(file, a); )
 }
 
 vector < pair < string, string > > Rules = rewriteRules(file_text);
-
-
+//cin k
+vector < vector < string > > first = First_k(Rules, k);
 
 
 
