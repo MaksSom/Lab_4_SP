@@ -9,7 +9,8 @@ using namespace std;
 vector < vector <string> > rewriteRules(string file_text)
 {
 //create a vector of rules
-//return { A, num, +, A}
+// {A, A, B}
+// {A, num, +, A}
 }
 
 vector < vector < string > > First_k(vector < vector <string> > Rules, int k)
@@ -30,13 +31,17 @@ vector < vector < string > > Follow_k(vector < pair < string, string >> Rules, i
 
 vector < vector < char > > LL_1(vector < vector < string > > first, vector < vector < string > > follow)
 {
-//{A, num, 1}
-//{B, }
 //visualisation
+//{A, num, 2}
+//{V, *, 6}
 }
 
+vector <int> sequenceOfRules()
+{
 //function sequenceOfRules
+//
 //Tree
+}
 
 //???
 int main()
