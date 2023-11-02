@@ -6,26 +6,32 @@
 
 using namespace std;
 
-vector < pair < string, string > > rewriteRules(string file_text)
+vector < vector <string> > rewriteRules(string file_text)
 {
 //create a vector of rules
+//return { A, num, +, A}
 }
 
-vector < vector < string > > First_k(vector < pair < string, string >> Rules, int k)
+vector < vector < string > > First_k(vector < vector <string> > Rules, int k)
 {
 //function first_k
 //visualisation
+// {A, ......}
+// {B, ......}
 }
 
 vector < vector < string > > Follow_k(vector < pair < string, string >> Rules, int k)
 {
 //function follow_k
 //visualisation
+// {A, ......}
+// {B, ......}
 }
 
 vector < vector < char > > LL_1(vector < vector < string > > first, vector < vector < string > > follow)
 {
-
+//{A, num, 1}
+//{B, }
 //visualisation
 }
 
