@@ -19,6 +19,74 @@ vector < vector < string > > First_k(vector < vector <string> > Rules, int k)
 //visualisation
 // {A, ......}
 // {B, ......}
+  
+    map<string, set<string>> First;
+
+    for (const vector<string>& rule : Rules) {
+        string nonTerminal = rule[0];
+        string production = rule[1];
+        if (isalpha(production[0]) && !isupper(production[0])) {
+            First[nonTerminal].insert(production.substr(0, 1));
+        }
+    }
+
+    bool changed = true;
+    while (changed) {
+        changed = false;
+        for (const vector<string>& rule : Rules) {
+            string nonTerminal = rule[0];
+            string production = rule[1];
+
+            for (size_t i = 0; i < production.length(); ++i) {
+                string symbol = production.substr(i, 1);
+
+                if (!isupper(symbol[0])) {
+                    // If it's a terminal, add it to First[nonTerminal]
+                    if (First[nonTerminal].insert(symbol).second) {
+                        changed = true;
+                    }
+                    break;
+                }
+                else {
+                    // If it's a non-terminal, add First[symbol] to First[nonTerminal]
+                    for (const string& firstSymbol : First[symbol]) {
+                        if (firstSymbol != "ε") {
+                            if (First[nonTerminal].insert(firstSymbol).second) {
+                                changed = true;
+                            }
+                        }
+                    }
+                    if (!First[symbol].count("ε")) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    vector<set<string>> FirstSets;
+    for (const vector<string>& rule : Rules) {
+        string nonTerminal = rule[0];
+        FirstSets.push_back(First[nonTerminal]);
+    }
+
+    for (size_t i = 0; i < FirstSets.size(); ++i) {
+        string nonTerminal = "Non-Terminal " + to_string(i);
+        cout << "first(" << nonTerminal << ") = {";
+
+        int symbolIndex = 0;
+        for (const string& symbol : FirstSets[i]) {
+            cout << symbol;
+            if (symbolIndex < FirstSets[i].size() - 1) {
+                cout << ", ";
+            }
+            symbolIndex++;
+        }
+
+        cout << "}" << endl;
+    }
+
+    return FirstSets;
 }
 
 vector < vector < string > > Follow_k(vector < pair < string, string >> Rules, int k)
