@@ -116,7 +116,7 @@ bool isTerminal(string a, vector < pair < string, string >> Rules)
   return true;
 }
 
-vector < vector < char > > LL_1(vector < vector < string > > first, vector < vector < string > > follow, vector < pair < string, string >> Rules)
+vector < vector < string > > LL_1(vector < vector < string > > first, vector < vector < string > > follow, vector < pair < string, string >> Rules)
 {
 //visualisation
 //{A, num, 2}
@@ -124,7 +124,7 @@ vector < vector < char > > LL_1(vector < vector < string > > first, vector < vec
 
 
 // {A, A, B}
-vector < vector < char > > ll1;
+vector < vector < string > > ll1;
 
 for(int i = 0; i < Rules.size(); i++)
 {
@@ -133,12 +133,12 @@ if(isTerminal(Rules[i][1], Rules))
 {
   if(Rules[i][1] != "eps.")  //EPS.
   {
-    ll1.pushback({Rules[i][0], Rules[i][1], i+1})
+    ll1.pushback({Rules[i][0], Rules[i][1], to_string(i+1)})
   }
   else
     for(int j = 1; j < follow[a].size(); j++)
     {
-      ll1.pushback({Rules[i][0], follow[a][j], i+1})
+      ll1.pushback({Rules[i][0], follow[a][j], to_string(i+1)})
     }
 }
 else
@@ -150,7 +150,7 @@ else
     for(int k = 1; k < follow[a].size(); k++)
     {
       if(first[b][j] == folllow[a][k])
-        ll1.pushback({Rules[i][0], first[b][j], i+1})
+        ll1.pushback({Rules[i][0], first[b][j], to_string(i+1)})
     }
   }
 }
