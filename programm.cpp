@@ -98,11 +98,65 @@ vector < vector < string > > Follow_k(vector < pair < string, string >> Rules, i
 // {B, ......}
 }
 
-vector < vector < char > > LL_1(vector < vector < string > > first, vector < vector < string > > follow)
+int findPos(vector < vector < string > > first, char a)
+{
+  for(int i = 0; i < first.size(); i++)
+  {
+    if(first[i][0] == a)
+      return i;
+  }
+  throw runtime_error("There are bo first/follow for the character");
+}
+
+bool isTerminal(string a, vector < pair < string, string >> Rules)
+{
+  for(int i = 1; i < Rules.size(); i++)
+    if(Rules[i][0] == a)
+      return false;
+  return true;
+}
+
+vector < vector < char > > LL_1(vector < vector < string > > first, vector < vector < string > > follow, vector < pair < string, string >> Rules)
 {
 //visualisation
 //{A, num, 2}
 //{V, *, 6}
+
+
+// {A, A, B}
+vector < vector < char > > ll1;
+
+for(int i = 0; i < Rules.size(); i++)
+{
+int a = findPos(follow, Rules[i][0]);
+if(isTerminal(Rules[i][1], Rules))
+{
+  if(Rules[i][1] != "eps.")  //EPS.
+  {
+    ll1.pushback({Rules[i][0], Rules[i][1], i+1})
+  }
+  else
+    for(int j = 1; j < follow[a].size(); j++)
+    {
+      ll1.pushback({Rules[i][0], follow[a][j], i+1})
+    }
+}
+else
+{
+  int b = findPos(first, Rules[i][1]);
+
+  for(int j = 1; j < first[b].size(); j++)
+  {
+    for(int k = 1; k < follow[a].size(); k++)
+    {
+      if(first[b][j] == folllow[a][k])
+        ll1.pushback({Rules[i][0], first[b][j], i+1})
+    }
+  }
+}
+}
+
+return ll1;
 }
 
 vector <int> sequenceOfRules()
