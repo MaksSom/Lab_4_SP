@@ -159,12 +159,61 @@ else
 return ll1;
 }
 
-vector <int> sequenceOfRules()
-{
+
+vector<int> sequenceOfRules(vector<vector<string>> ll1Table, string word, string startSymbol) {
 //function sequenceOfRules
 //
 //Tree
+    vector<int> sequence;
+
+    stack<string> st;
+    st.push("$");  // Bottom of stack marker
+    st.push(startSymbol);
+
+    size_t wordIndex = 0;
+
+    while (!st.empty()) {
+        string stackTop = st.top();
+        if (!isupper(stackTop[0])) {
+            // Terminal on top of the stack
+            if (stackTop == word.substr(wordIndex, stackTop.length())) {
+                // Terminal matches, pop from stack and move to the next character in the word
+                st.pop();
+                wordIndex += stackTop.length();
+            } else {
+                // Mismatch, backtracking is needed
+                sequence.clear();  // Clear the sequence as the current path is invalid
+                break;
+            }
+        } else {
+            // Non-terminal on top of the stack
+            int row = findPos(ll1Table, stackTop[0]);
+            int col = findPos(ll1Table[0], word[wordIndex]);
+            int ruleNumber = stoi(ll1Table[row][col]);
+
+            if (ruleNumber == 0) {
+                // No production rule, mismatch
+                sequence.clear();  // Clear the sequence as the current path is invalid
+                break;
+            } else {
+                // Apply the production rule
+                sequence.push_back(ruleNumber);
+
+                // Pop non-terminal from the stack
+                st.pop();
+
+                // Push the right-hand side of the production rule onto the stack
+                for (int i = ll1Table[ruleNumber][1].size() - 1; i > 0; i -= 2) {
+                    string rhsSymbol = ll1Table[ruleNumber][1].substr(i - 1, 2);
+                    st.push(rhsSymbol);
+                }
+            }
+        }
+    }
+
+    return sequence;
 }
+
 
 //???
 int main()
