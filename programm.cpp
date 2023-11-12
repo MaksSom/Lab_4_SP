@@ -167,7 +167,7 @@ vector<int> sequenceOfRules(vector<vector<string>> ll1Table, string word, string
     vector<int> sequence;
 
     stack<string> st;
-    st.push("$");  // Bottom of stack marker
+    st.push("$"); 
     st.push(startSymbol);
 
     size_t wordIndex = 0;
@@ -181,7 +181,6 @@ vector<int> sequenceOfRules(vector<vector<string>> ll1Table, string word, string
                 st.pop();
                 wordIndex += stackTop.length();
             } else {
-                // Mismatch, backtracking is needed
                 sequence.clear();  // Clear the sequence as the current path is invalid
                 break;
             }
