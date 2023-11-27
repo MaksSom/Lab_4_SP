@@ -98,19 +98,6 @@ vector < vector < string > > Follow_k(vector < pair < string, string >> Rules, i
 // {B, ......}
 }
 
-int findPos(vector < vector < string > > first, char a)
-{
-  for(int i = 0; i < first.size(); i++)
-  {
-    string b(1, a);
-    //cout << "Checking " << first[i][0] << " " << " and " << b << " \n";
-    if(first[i][0] == b)
-      return i;
-  }
-  cout << a << endl;
-  throw runtime_error("There are no first/follow for the character");
-}
-
 bool isTerminal(string a)
 {
     return 'A' <= a.at(0) && a.at(0) <= 'Z' && a.size() == 1;
