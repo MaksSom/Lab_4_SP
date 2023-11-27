@@ -102,21 +102,56 @@ int findPos(vector < vector < string > > first, char a)
 {
   for(int i = 0; i < first.size(); i++)
   {
-    if(first[i][0] == a)
+    string b(1, a);
+    //cout << "Checking " << first[i][0] << " " << " and " << b << " \n";
+    if(first[i][0] == b)
       return i;
   }
-  throw runtime_error("There are bo first/follow for the character");
+  cout << a << endl;
+  throw runtime_error("There are no first/follow for the character");
 }
 
-bool isTerminal(string a, vector < pair < string, string >> Rules)
+bool isTerminal(string a)
 {
-  for(int i = 1; i < Rules.size(); i++)
-    if(Rules[i][0] == a)
-      return false;
-  return true;
+    return 'A' <= a.at(0) && a.at(0) <= 'Z' && a.size() == 1;
 }
 
-vector < vector < string > > LL_1(vector < vector < string > > first, vector < vector < string > > follow, vector < pair < string, string >> Rules)
+vector < string > getFirst(vector < vector < string > > first, string a)
+{
+      vector < string > res;
+      if(isTerminal(a))
+      {
+          int i = 0;
+          while(i < first.size())
+          {
+              if(first[i][0] == a)
+                break;
+              i++;
+          }
+          for(int j = 1; j < first[i].size(); j++)
+            res.push_back(first[i][j]);
+      }
+      else
+        res.push_back(a);
+
+      return res;
+}
+
+vector < string > concan(vector < string > a, vector < string > b)
+{
+    vector < string > res;
+    for(int i = 0; i < a.size(); i++)
+    {
+        if(a[i] != "eps")
+            res.push_back(a[i]);
+        else
+            for(int j = 0; j < b.size(); j++)
+                res.push_back(b[j]);
+    }
+    return res;
+}
+
+vector < vector < string > > LL_1(vector < vector < string > > first, vector < vector < string > > follow, vector < vector < string >> Rules)
 {
 //visualisation
 //{A, num, 2}
@@ -128,32 +163,13 @@ vector < vector < string > > ll1;
 
 for(int i = 0; i < Rules.size(); i++)
 {
-int a = findPos(follow, Rules[i][0]);
-if(isTerminal(Rules[i][1], Rules))
-{
-  if(Rules[i][1] != "eps.")  //EPS.
-  {
-    ll1.pushback({Rules[i][0], Rules[i][1], to_string(i+1)})
-  }
-  else
-    for(int j = 1; j < follow[a].size(); j++)
-    {
-      ll1.pushback({Rules[i][0], follow[a][j], to_string(i+1)})
-    }
-}
-else
-{
-  int b = findPos(first, Rules[i][1]);
+    vector < string > res = {"eps"};
+    for(int j = 1; j < Rules[i].size(); j++)
+        res = concan(res, getFirst(first, Rules[i][j]));
+    res = concan(res, getFirst(follow, Rules[i][0]));
 
-  for(int j = 1; j < first[b].size(); j++)
-  {
-    for(int k = 1; k < follow[a].size(); k++)
-    {
-      if(first[b][j] == folllow[a][k])
-        ll1.pushback({Rules[i][0], first[b][j], to_string(i+1)})
-    }
-  }
-}
+    for(int j = 0; j < res.size(); j++)
+        ll1.push_back({Rules[i][0], res[j], to_string(i+1)});
 }
 
 return ll1;
