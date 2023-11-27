@@ -5,6 +5,9 @@
 #include <utility>
 #include <stdexcept>
 
+using StringSet = set<string>;
+using StringVector = vector<string>;
+
 using namespace std;
 
 vector < vector <string> > rewriteRules(string file_text)
@@ -14,7 +17,7 @@ vector < vector <string> > rewriteRules(string file_text)
 // {A, num, +, A}
 }
 
-vector < vector < string > > First_k(vector < vector <string> > Rules, int k)
+StringVector First_k(const vector<StringVector>& Rules, int k)
 {
 //function first_k
 //visualisation
@@ -51,13 +54,13 @@ vector < vector < string > > First_k(vector < vector <string> > Rules, int k)
                 else {
                     // If it's a non-terminal, add First[symbol] to First[nonTerminal]
                     for (const string& firstSymbol : First[symbol]) {
-                        if (firstSymbol != "ε") {
+                        if (firstSymbol != "eps") {
                             if (First[nonTerminal].insert(firstSymbol).second) {
                                 changed = true;
                             }
                         }
                     }
-                    if (!First[symbol].count("ε")) {
+                    if (!First[symbol].count("eps")) {
                         break;
                     }
                 }
@@ -65,8 +68,8 @@ vector < vector < string > > First_k(vector < vector <string> > Rules, int k)
         }
     }
 
-    vector<set<string>> FirstSets;
-    for (const vector<string>& rule : Rules) {
+     StringVector FirstSets;
+    for (const StringVector& rule : Rules) {
         string nonTerminal = rule[0];
         FirstSets.push_back(First[nonTerminal]);
     }
