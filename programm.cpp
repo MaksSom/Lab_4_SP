@@ -15,6 +15,21 @@ vector < vector <string> > rewriteRules(string file_text)
 //create a vector of rules
 // {A, A, B}
 // {A, num, +, A}
+
+  vector<vector<string>> rules;
+
+    istringstream iss(file_text);
+    string line;
+    while (getline(iss, line)) {
+        istringstream ruleStream(line);
+        vector<string> rule;
+        for (string token; ruleStream >> token; ) {
+            rule.push_back(token);
+        }
+        rules.push_back(rule);
+    }
+
+    return rules;
 }
 
 StringVector First_k(const vector<StringVector>& Rules, int k)
