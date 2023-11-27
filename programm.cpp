@@ -4,11 +4,12 @@
 #include <string>
 #include <utility>
 #include <stdexcept>
+#include <set>
+#include <map>
 
-using StringSet = set<string>;
-using StringVector = vector<string>;
 
 using namespace std;
+
 
 vector < vector <string> > rewriteRules(string file_text)
 {
@@ -16,29 +17,104 @@ vector < vector <string> > rewriteRules(string file_text)
 // {A, A, B}
 // {A, num, +, A}
 
-  vector<vector<string>> rules;
-
-    istringstream iss(file_text);
-    string line;
-    while (getline(iss, line)) {
-        istringstream ruleStream(line);
-        vector<string> rule;
-        for (string token; ruleStream >> token; ) {
-            rule.push_back(token);
-        }
-        rules.push_back(rule);
+vector < vector < string> >  res;
+res.push_back({});
+string word;
+for(char c : file_text)
+{
+    //cout << "Working with " << c << endl;
+    if(c == '\n')
+    {
+        if(word != "")
+        {res[res.size()-1].push_back(word);
+        res.push_back({});}
+        word = "";
+        //cout << "It's '\ n' \n";
     }
-
-    return rules;
+    else if(c == ' ')
+    {
+        if(word != "")
+            res[res.size()-1].push_back(word);
+        word = "";
+        //cout << "It's ' ' \n";
+    }
+    else if(c != '-' and c != '>')
+    {
+        word = word + c;
+    }
 }
 
-StringVector First_k(const vector<StringVector>& Rules, int k)
+res.pop_back();
+    return res;
+}
+
+
+/*vector < vector < string > > nextStepFirst(vector < vector < string > > Rules, vector < vector < string > > first)
+{
+        for(int i = 0; i < first.size(); i++)
+        {
+            for(int j = 0; j < Rules.size(); j++)
+            {
+                if(Rules[j][0] == first[j][0])
+                {
+                    if(isTerminal(Rules[j][1]))
+                    {
+                        first[j] = addVector(first[j], getFirst(first, Rules[j][1]));
+                    }
+                    else
+                    {
+                        if(Rules[j][1] != "eps")
+                        {
+                            first[j].push_back(Rules[j][1]);
+                        }
+                        else
+                        {
+                            if(Rules[j].size() > 2)
+
+                        }
+                    }
+                }
+            }
+        }
+
+}*/
+
+/*vector < vector < string > > First_k(vector < vector < string > > Rules, int k)
 {
 //function first_k
 //visualisation
 // {A, ......}
 // {B, ......}
-  
+
+vector < vector < string > > first = {{Rules[0][0]}};
+
+for(int i = 0; i < Rules.size(); i++)
+{
+    if(first[first.size()-1][0] != Rules[i][0])
+    {
+        first.push_back({Rules[i][0]});
+    }
+}
+
+
+    vector < vector < string > > check;
+    while(check != first)
+    {
+        check = first;
+        first = nextStepFirst(Rules, first);
+    }
+
+
+
+}*/
+
+vector < vector < string > > First_k(vector < vector < string > > Rules, int k)
+{
+//function first_k
+//visualisation
+// {A, ......}
+// {B, ......}
+
     map<string, set<string>> First;
 
     for (const vector<string>& rule : Rules) {
@@ -83,10 +159,10 @@ StringVector First_k(const vector<StringVector>& Rules, int k)
         }
     }
 
-     StringVector FirstSets;
-    for (const StringVector& rule : Rules) {
+     vector < vector < string > > FirstSets;
+    for (vector < string > rule : Rules) {
         string nonTerminal = rule[0];
-        FirstSets.push_back(First[nonTerminal]);
+        //FirstSets.push_back(First[nonTerminal]);
     }
 
     for (size_t i = 0; i < FirstSets.size(); ++i) {
@@ -107,6 +183,7 @@ StringVector First_k(const vector<StringVector>& Rules, int k)
 
     return FirstSets;
 }
+
 
 bool isTerminal(string a)
 {
@@ -237,13 +314,16 @@ vector < vector < string > > LL_1(vector < vector < string > > first, vector < v
 
 
 // {A, A, B}
+
 vector < vector < string > > ll1;
 
 for(int i = 0; i < Rules.size(); i++)
 {
     vector < string > res = {"eps"};
     for(int j = 1; j < Rules[i].size(); j++)
+    {
         res = concan(res, getFirst(first, Rules[i][j]));
+    }
     res = concan(res, getFirst(follow, Rules[i][0]));
 
     for(int j = 0; j < res.size(); j++)
@@ -254,14 +334,14 @@ return ll1;
 }
 
 
-vector<int> sequenceOfRules(vector<vector<string>> ll1Table, string word, string startSymbol) {
+/*vector<int> sequenceOfRules(vector<vector<string>> ll1Table, string word, string startSymbol) {
 //function sequenceOfRules
 //
 //Tree
     vector<int> sequence;
 
     stack<string> st;
-    st.push("$"); 
+    st.push("$");
     st.push(startSymbol);
 
     size_t wordIndex = 0;
@@ -305,32 +385,77 @@ vector<int> sequenceOfRules(vector<vector<string>> ll1Table, string word, string
     }
 
     return sequence;
-}
+}*/
 
 
-//???
+
 int main()
 {
-ifstream file("Example.txt");
-
-if(!file.is_open()) 
-{
-cout << "File can't be opened" << endl;
-return 0;
-}
-
-string file_text;
-for(string a; getline(file, a); )
-{
-  file_text += a + "\n";
-}
-
-vector < pair < string, string > > Rules = rewriteRules(file_text);
-//cin k
-vector < vector < string > > first = First_k(Rules, k);
-vector < vector < string > > follow = Follow_k(Rules, k);
+    vector < vector < string > > first = {{"E", "id", "(", "eps"}, {"D", "num", "(", "*", "!"}, {"R", "num", "(", "*", "!"}, {"V", "num", "eps"}, {"L", "(", "eps"}, {"Z", "eps"}};
+    //vector < vector < string > > follow = {{"E", ")", "*", "eps"}, {"D", ")", "*", "eps"}, {"R", ")"}, {"V", "*", "!"}, {"L", "*", "!"}, {"Z", "*", "!"}};
+    //vector < vector < string > > Rules = {{"E", "id", "+", "D"}, {"E", "(", "E", "*", "R", ")"}, {"E", "eps"}, {"D", "V", "*", "E"}, {"D", "L", "!", "E"}, {"R", "V", "!", "E"}, {"R", "L", "*", "E"}, {"V", "Z"}, {"V", "num"}, {"L", "Z"}, {"L", "(", "E", ")"}, {"Z", "eps"}};
 
 
+    ifstream file("text.txt");
+
+    if(!file.is_open())
+    {
+    cout << "File can't be opened" << endl;
+    return 0;
+    }
+
+    string file_text;
+    for(string a; getline(file, a); )
+    {
+    file_text += a + "\n";
+    }
+
+    vector < vector < string > > Rules = rewriteRules(file_text);
+    cout << "Rules: \n";
+    for(int i = 0; i < Rules.size(); i++)
+    {
+        cout << Rules[i][0] << " -> ";
+        for(int j = 1; j < Rules[i].size(); j++)
+            cout << Rules[i][j] <<  ' ';
+        cout << endl;
+    }
+
+     cout << endl;
+
+    cout << "first: \n";
+    for(int i = 0; i < first.size(); i++)
+    {
+        cout << first[i][0] << ": ";
+        for(int j = 1; j < first[i].size(); j++)
+            cout << first[i][j] <<  ' ';
+        cout << endl;
+    }
+
+    cout << endl;
+
+
+
+    vector < vector < string > > follow = Follow_k1(Rules, first);
+    cout << "follow: \n";
+    for(int i = 0; i < follow.size(); i++)
+    {
+        cout << follow[i][0] << ": ";
+        for(int j = 1; j < follow[i].size(); j++)
+            cout << follow[i][j] <<  ' ';
+        cout << endl;
+    }
+
+    cout << endl;
+
+
+    vector < vector < string > > ll_1 = LL_1(first, follow, Rules);
+    cout << endl << "ll_1: \n";
+    for(int i = 0; i < ll_1.size(); i++)
+    {
+        for(int j = 0; j < ll_1[i].size(); j++)
+            cout << ll_1[i][j] << ' ';
+        cout << endl;
+    }
 
 return 0;
 }
