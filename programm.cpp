@@ -90,17 +90,26 @@ vector < vector < string > > First_k(vector < vector <string> > Rules, int k)
     return FirstSets;
 }
 
-vector < vector < string > > Follow_k(vector < pair < string, string >> Rules, int k)
-{
-//function follow_k
-//visualisation
-// {A, ......}
-// {B, ......}
-}
-
 bool isTerminal(string a)
 {
     return 'A' <= a.at(0) && a.at(0) <= 'Z' && a.size() == 1;
+}
+
+bool isIn(string a, vector < string > A)
+{
+    for(int i = 0; i < A.size(); i++)
+        if(a == A[i])
+            return true;
+    return false;
+}
+
+vector < string > addVector( vector < string >  a, vector < string >  b)
+{
+    for(int i = 0; i < b.size(); i++)
+        if(!isIn(b[i], a))
+            a.push_back(b[i]);
+
+    return a;
 }
 
 vector < string > getFirst(vector < vector < string > > first, string a)
@@ -137,6 +146,70 @@ vector < string > concan(vector < string > a, vector < string > b)
     }
     return res;
 }
+
+vector < vector < string > > nextStepFollow(vector < vector < string > > Rules, vector < vector < string > > first, vector < vector < string > > follow)
+{
+    for(int i = 0; i < follow.size(); i++)
+    {
+        for(int j = 0; j < Rules.size(); j++)
+            for(int k = 1; k < Rules[j].size(); k++)
+            {
+                if(Rules[j][k] == follow[i][0])
+                {
+                    if(k < Rules[j].size()-1)
+                    {
+                        vector < string > temp = getFirst(first, Rules[j][k+1]);
+                        while(isIn("eps", temp))
+                        {
+                            i = 2;
+                            if(k + i < Rules[j].size())
+                            {
+                                temp = concan(temp, getFirst(first, Rules[j][k+i]));
+                                i++;
+                            }
+                            else
+                            {
+                                temp = concan(temp, getFirst(follow, Rules[j][0]));
+                                break;
+                            }
+                        }
+                        follow[i] = addVector(follow[i], temp);
+                    }
+                    else
+                    {
+                        follow[i] = addVector(follow[i], getFirst(follow, Rules[j][0]));
+                    }
+                }
+            }
+    }
+
+    return follow;
+}
+
+vector < vector < string > > Follow_k1(vector < vector < string > > Rules, vector < vector < string > > first)
+{
+//function follow_k
+//visualisation
+// {A, ......}
+// {B, ......}
+     vector < vector < string > > follow;
+     for(int i = 0; i < first.size(); i++)
+     {
+         follow.push_back({first[i][0]});
+         if(first[i][0] == Rules[0][0])
+            follow[i].push_back("eps");
+     }
+
+    vector < vector < string > > check;
+    while(check != follow)
+    {
+        check = follow;
+        follow = nextStepFollow(Rules, first, follow);
+    }
+
+    return follow;
+}
+
 
 vector < vector < string > > LL_1(vector < vector < string > > first, vector < vector < string > > follow, vector < vector < string >> Rules)
 {
